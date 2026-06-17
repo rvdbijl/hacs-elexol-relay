@@ -1,0 +1,14 @@
+{
+  "domain": "elexol_relay",
+  "name": "Elexol Relay",
+  "after_dependencies": [],
+  "codeowners": ["@rvdbijl"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/rvdbijl/hacs-elexol-relay",
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/rvdbijl/hacs-elexol-relay/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

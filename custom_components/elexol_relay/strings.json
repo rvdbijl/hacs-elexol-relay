@@ -1,0 +1,33 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Elexol Relay",
+        "description": "Configure the Elexol EtherIO relay board.",
+        "data": {
+          "host": "Host",
+          "udp_port": "UDP port",
+          "port_selection": "Installed relay ports"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This Elexol relay board is already configured."
+    },
+    "error": {
+      "host_required": "Enter the relay board host."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Elexol Relay options",
+        "description": "Update the UDP port and installed relay ports.",
+        "data": {
+          "udp_port": "UDP port",
+          "port_selection": "Installed relay ports"
+        }
+      }
+    }
+  }
+}
