@@ -4,10 +4,12 @@ from homeassistant.const import Platform
 
 DOMAIN = "elexol_relay"
 
+CONF_POLL_INTERVAL = "poll_interval"
 CONF_PORTS = "ports"
 CONF_PORT_SELECTION = "port_selection"
 CONF_UDP_PORT = "udp_port"
 
+DEFAULT_POLL_INTERVAL = 30
 DEFAULT_UDP_PORT = 2424
 PORTS = ("A", "B", "C")
 PORT_SELECTION_A = "A"

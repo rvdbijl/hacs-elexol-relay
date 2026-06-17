@@ -1,8 +1,10 @@
 {
   "domain": "elexol_relay",
-  "name": "Elexol Relay",
+  "name": "Elexol Ether I/O 24 R Relay",
   "after_dependencies": [],
-  "codeowners": ["@rvdbijl"],
+  "codeowners": [
+    "@rvdbijl"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/rvdbijl/hacs-elexol-relay",
@@ -10,5 +12,5 @@
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/rvdbijl/hacs-elexol-relay/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

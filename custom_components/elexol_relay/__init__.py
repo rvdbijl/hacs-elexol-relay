@@ -6,7 +6,16 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_PORTS, CONF_UDP_PORT, DEFAULT_UDP_PORT, DOMAIN, PLATFORMS, PORTS
+from .const import (
+    CONF_POLL_INTERVAL,
+    CONF_PORTS,
+    CONF_UDP_PORT,
+    DEFAULT_POLL_INTERVAL,
+    DEFAULT_UDP_PORT,
+    DOMAIN,
+    PLATFORMS,
+    PORTS,
+)
 from .hub import ElexolRelayHub
 
 
@@ -23,11 +32,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         host=entry.data[CONF_HOST],
         udp_port=int(_entry_value(entry, CONF_UDP_PORT, DEFAULT_UDP_PORT)),
         ports=ports,
+        poll_interval=int(_entry_value(entry, CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL)),
     )
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = hub
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
+    entry.async_on_unload(hub.async_stop)
 
+    await hub.async_initialize()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
@@ -41,5 +53,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload an Elexol Relay config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id, None)
+        hub: ElexolRelayHub | None = hass.data[DOMAIN].pop(entry.entry_id, None)
+        if hub is not None:
+            hub.async_stop()
     return unload_ok

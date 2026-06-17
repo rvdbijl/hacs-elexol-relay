@@ -3,11 +3,12 @@
     "step": {
       "user": {
         "title": "Elexol Relay",
-        "description": "Configure the Elexol EtherIO relay board.",
+        "description": "Configure the Elexol Ether I/O 24 R relay board.",
         "data": {
           "host": "Host",
           "udp_port": "UDP port",
-          "port_selection": "Installed relay ports"
+          "port_selection": "Installed relay ports",
+          "poll_interval": "Readback poll interval seconds"
         }
       }
     },
@@ -22,10 +23,11 @@
     "step": {
       "init": {
         "title": "Elexol Relay options",
-        "description": "Update the UDP port and installed relay ports.",
+        "description": "Update the UDP port, installed relay ports, and readback polling.",
         "data": {
           "udp_port": "UDP port",
-          "port_selection": "Installed relay ports"
+          "port_selection": "Installed relay ports",
+          "poll_interval": "Readback poll interval seconds"
         }
       }
     }

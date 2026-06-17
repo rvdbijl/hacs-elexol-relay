@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
@@ -10,7 +11,6 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import DOMAIN
 from .hub import ElexolRelayHub
@@ -24,13 +24,15 @@ async def async_setup_entry(
     """Set up Elexol relay switches."""
     hub: ElexolRelayHub = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
-        ElexolRelaySwitch(entry, hub, port, relay)
-        for port in hub.ports
-        for relay in range(1, 9)
+        [
+            ElexolRelaySwitch(entry, hub, port, relay)
+            for port in hub.ports
+            for relay in range(1, 9)
+        ]
     )
 
 
-class ElexolRelaySwitch(SwitchEntity, RestoreEntity):
+class ElexolRelaySwitch(SwitchEntity):
     """Representation of one Elexol relay output."""
 
     _attr_has_entity_name = True
@@ -49,23 +51,34 @@ class ElexolRelaySwitch(SwitchEntity, RestoreEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             manufacturer="Elexol",
-            model="EtherIO",
+            model="Ether I/O 24 R",
             name=f"Elexol Relay {entry.data[CONF_HOST]}",
             configuration_url=f"http://{entry.data[CONF_HOST]}",
         )
 
     @property
+    def available(self) -> bool:
+        """Return whether the relay board is responding to readback."""
+        return self._hub.available
+
+    @property
     def is_on(self) -> bool:
-        """Return true if the cached relay state is on."""
+        """Return true if the last board readback says this relay bit is on."""
         return self._hub.relay_is_on(self._port, self._relay)
 
-    async def async_added_to_hass(self) -> None:
-        """Restore cached state without sending a UDP packet."""
-        await super().async_added_to_hass()
-        last_state = await self.async_get_last_state()
-        if last_state is not None:
-            self._hub.set_cached_relay(self._port, self._relay, last_state.state == "on")
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return diagnostic readback attributes."""
+        return {
+            "port": self._port,
+            "relay": self._relay,
+            "port_value": self._hub.port_value(self._port),
+            "readback_verified": self._hub.port_verified(self._port),
+            "last_read_error": self._hub.last_error,
+        }
 
+    async def async_added_to_hass(self) -> None:
+        """Register for hub readback updates."""
         self._remove_listener = self._hub.async_add_listener(self._handle_hub_update)
         self.async_write_ha_state()
 
@@ -85,5 +98,5 @@ class ElexolRelaySwitch(SwitchEntity, RestoreEntity):
 
     @callback
     def _handle_hub_update(self) -> None:
-        """Write switch state after the cached port mask changes."""
+        """Write switch state after board readback changes."""
         self.async_write_ha_state()
