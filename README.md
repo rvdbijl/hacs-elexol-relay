@@ -27,12 +27,35 @@ Readback polling can help observe outside changes while migrating, but it does n
 
 ## Installation With HACS
 
-1. In HACS, open **Integrations**.
-2. Open the three-dot menu and choose **Custom repositories**.
-3. Add `https://github.com/rvdbijl/hacs-elexol-relay` as an **Integration** repository.
-4. Install **Elexol Relay**.
-5. Restart Home Assistant.
-6. Go to **Settings -> Devices & services -> Add integration** and search for **Elexol Relay**.
+This repository is intended to be installed as a HACS custom repository.
+
+### Add The Custom Repository
+
+1. In Home Assistant, open **HACS**.
+2. Open **Integrations**.
+3. Use the three-dot menu in the top-right corner and choose **Custom repositories**.
+4. Paste this repository URL:
+
+   ```text
+   https://github.com/rvdbijl/hacs-elexol-relay
+   ```
+
+5. Set **Category** to **Integration**.
+6. Select **Add**.
+
+### Install The Integration
+
+1. Search HACS for **Elexol Relay**.
+2. Open the repository card.
+3. Select **Download**.
+4. Restart Home Assistant when HACS asks you to.
+5. After the restart, go to **Settings -> Devices & services**.
+6. Select **Add integration** and search for **Elexol Relay**.
+7. Enter the relay board host, UDP port, installed ports, and readback poll interval.
+
+### Updating Through HACS
+
+HACS tracks GitHub Releases for this repository. When a new release is published, HACS should offer it as an update for the installed integration. After updating, restart Home Assistant so the new custom component code is loaded.
 
 ## Manual Installation
 
