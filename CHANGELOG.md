@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1
+
+- Fix config flow form rendering by replacing the custom poll interval validator with a Home Assistant-native numeric selector.
+
 ## v0.2.0
 
 - Add Ether I/O 24 R readback support using lowercase port commands.

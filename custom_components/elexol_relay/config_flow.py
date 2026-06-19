@@ -9,6 +9,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
+from homeassistant.helpers import selector
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
@@ -39,17 +40,6 @@ def _selection_from_ports(ports: list[str]) -> str:
     return DEFAULT_PORT_SELECTION
 
 
-def _poll_interval_validator(value: Any) -> int:
-    """Validate poll interval seconds. Zero disables polling."""
-    try:
-        value = int(value)
-    except (TypeError, ValueError) as err:
-        raise vol.Invalid("poll interval must be a number of seconds") from err
-    if value < 0 or value > 3600:
-        raise vol.Invalid("poll interval must be between 0 and 3600 seconds")
-    return value
-
-
 def _config_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
     """Return the initial config flow schema."""
     defaults = defaults or {}
@@ -67,7 +57,14 @@ def _config_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
             vol.Required(
                 CONF_POLL_INTERVAL,
                 default=defaults.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
-            ): _poll_interval_validator,
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=0,
+                    max=3600,
+                    mode=selector.NumberSelectorMode.BOX,
+                    unit_of_measurement="s",
+                )
+            ),
         }
     )
 
@@ -88,7 +85,14 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
             vol.Required(
                 CONF_POLL_INTERVAL,
                 default=defaults.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
-            ): _poll_interval_validator,
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=0,
+                    max=3600,
+                    mode=selector.NumberSelectorMode.BOX,
+                    unit_of_measurement="s",
+                )
+            ),
         }
     )
 
